@@ -3,13 +3,33 @@ import portfolio1 from "@/assets/portfolio-1.jpg";
 import portfolio2 from "@/assets/portfolio-2.jpg";
 import portfolio3 from "@/assets/portfolio-3.jpg";
 import { ExternalLink } from "lucide-react";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
 const IMAGES = [portfolio1, portfolio2, portfolio3];
-const { portfolio } = siteBlueprint;
+
+interface PortfolioCard {
+  name: string;
+  location: string;
+  type: string;
+  meta: string;
+  rating: string;
+  externalUrl: string;
+}
+
+interface PortfolioContent {
+  id: string;
+  eyebrow: string;
+  title: string;
+  highlightedWord: string;
+  cards: PortfolioCard[];
+  primaryCta: { label: string; href: string; variant?: string; external?: boolean; subtext?: string };
+}
 
 export default function PortfolioSection() {
   const prefersReduced = useReducedMotion();
+  const { data: portfolio } = useSectionContent<PortfolioContent>("portfolio");
+
+  if (!portfolio) return null;
 
   return (
     <section id="portfolio" className="section-padding bg-card/30">
@@ -41,7 +61,7 @@ export default function PortfolioSection() {
             >
               <div className="aspect-[4/3] overflow-hidden relative">
                 <img
-                  src={IMAGES[i]}
+                  src={IMAGES[i % IMAGES.length]}
                   alt={p.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"

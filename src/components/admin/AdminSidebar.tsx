@@ -1,4 +1,4 @@
-import { LayoutDashboard, Settings, Plug, LogOut, Eye, FileText, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Settings, Plug, LogOut, Eye, FileText, ChevronRight, Palette } from "lucide-react";
 import type { CmsContent } from "@/hooks/use-cms";
 
 interface Props {
@@ -14,18 +14,19 @@ export default function AdminSidebar({ activeTab, setActiveTab, activeSection, s
   const tabs = [
     { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { key: "sections", label: "Content", icon: FileText },
+    { key: "theme", label: "Theme", icon: Palette },
     { key: "settings", label: "Settings", icon: Settings },
     { key: "integrations", label: "Integrations", icon: Plug },
   ];
 
   return (
-    <aside className="w-64 min-h-screen bg-card border-r border-border flex flex-col">
+    <aside className="w-64 min-h-screen bg-card border-r border-border flex flex-col shrink-0">
       <div className="p-6 border-b border-border">
         <h2 className="font-serif text-lg font-semibold text-foreground">Site CMS</h2>
-        <p className="text-xs text-muted-foreground">Christiano PM Admin</p>
+        <p className="text-xs text-muted-foreground">Full Page & Content Editor</p>
       </div>
 
-      <nav className="flex-1 p-3 space-y-0.5">
+      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         {tabs.map((t) => (
           <button
             key={t.key}

@@ -1,20 +1,37 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
 interface HeroProps {
   onOpenWizard: () => void;
 }
 
-const { hero, stats } = siteBlueprint;
+interface HeroContent {
+  id: string;
+  eyebrow: string;
+  headline: string;
+  highlightedWord: string;
+  subtitle: string;
+  primaryCta: { label: string; href: string; variant?: string; subtext?: string };
+  secondaryCta: { label: string; href: string; variant?: string };
+}
+
+interface StatItem {
+  value: string;
+  label: string;
+}
 
 export default function Hero({ onOpenWizard }: HeroProps) {
+  const { data: hero } = useSectionContent<HeroContent>("hero");
+  const { data: stats } = useSectionContent<StatItem[]>("stats");
   const ref = useRef<HTMLElement>(null);
   const prefersReduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const imgY = useTransform(scrollYProgress, [0, 1], [0, prefersReduced ? 0 : 24]);
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+
+  if (!hero) return null;
 
   return (
     <section
@@ -63,20 +80,21 @@ export default function Hero({ onOpenWizard }: HeroProps) {
           </motion.div>
         </motion.div>
 
-        {/* Stats strip */}
-        <motion.div
-          initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
-        >
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center lg:text-left">
-              <p className="text-xl sm:text-2xl font-serif font-bold text-primary">{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
-            </div>
-          ))}
-        </motion.div>
+        {stats && (
+          <motion.div
+            initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
+          >
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center lg:text-left">
+                <p className="text-xl sm:text-2xl font-serif font-bold text-primary">{stat.value}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+              </div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   );

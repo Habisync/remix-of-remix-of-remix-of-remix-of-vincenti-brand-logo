@@ -1,21 +1,35 @@
 import { Logo } from "./Logo";
 import { Facebook, Instagram, MapPin, Mail, Phone } from "lucide-react";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
-const { footer, brand } = siteBlueprint;
+interface FooterContent {
+  brandName: string;
+  brandTagline: string;
+  links: Array<{ id: string; label: string; href: string }>;
+  socialLinks: Array<{ platform: string; href: string; ariaLabel: string }>;
+  copyright: string;
+}
+
+interface BrandContent {
+  email: string;
+  phone: string;
+  location: string;
+}
 
 export default function Footer() {
+  const { data: footer } = useSectionContent<FooterContent>("footer");
+  const { data: brand } = useSectionContent<BrandContent>("brand");
+
+  if (!footer || !brand) return null;
+
   return (
     <footer className="py-10 sm:py-14 border-t border-border">
       <div className="section-container">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <Logo size="sm" />
-            <p className="text-xs text-muted-foreground mt-2 leading-relaxed max-w-xs">
-              {footer.brandTagline}
-            </p>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed max-w-xs">{footer.brandTagline}</p>
           </div>
-
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">Quick Links</h4>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
@@ -24,7 +38,6 @@ export default function Footer() {
               ))}
             </div>
           </div>
-
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">Contact</h4>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
@@ -43,14 +56,7 @@ export default function Footer() {
               {footer.socialLinks.map((s) => {
                 const Icon = s.platform === "Facebook" ? Facebook : Instagram;
                 return (
-                  <a
-                    key={s.platform}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-full border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors"
-                    aria-label={s.ariaLabel}
-                  >
+                  <a key={s.platform} href={s.href} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors" aria-label={s.ariaLabel}>
                     <Icon size={15} />
                   </a>
                 );
@@ -58,7 +64,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
         <div className="pt-6 border-t border-border/50 text-center">
           <p className="text-xs text-muted-foreground">{footer.copyright}</p>
         </div>
