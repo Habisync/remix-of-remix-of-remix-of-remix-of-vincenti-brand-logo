@@ -5,12 +5,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
-const { faq } = siteBlueprint;
+interface FaqContent {
+  id: string;
+  eyebrow: string;
+  title: string;
+  highlightedWord: string;
+  items: Array<{ question: string; answer: string }>;
+}
 
 export default function FAQSection() {
   const prefersReduced = useReducedMotion();
+  const { data: faq } = useSectionContent<FaqContent>("faq");
+
+  if (!faq) return null;
 
   return (
     <section id="faq" className="section-padding bg-card/30">

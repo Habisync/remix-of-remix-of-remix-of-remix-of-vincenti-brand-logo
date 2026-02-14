@@ -1,20 +1,30 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import { ClipboardCheck, Camera, Rocket } from "lucide-react";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
 interface ProcessSectionProps {
   onOpenWizard: () => void;
 }
 
+interface ProcessContent {
+  id: string;
+  eyebrow: string;
+  title: string;
+  highlightedWord: string;
+  steps: Array<{ step: string; title: string; body: string }>;
+}
+
 const ICONS = [ClipboardCheck, Camera, Rocket];
-const { process } = siteBlueprint;
 
 export default function ProcessSection({ onOpenWizard }: ProcessSectionProps) {
+  const { data: process } = useSectionContent<ProcessContent>("process");
   const ref = useRef<HTMLElement>(null);
   const prefersReduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [prefersReduced ? 0 : 20, prefersReduced ? 0 : -20]);
+
+  if (!process) return null;
 
   return (
     <section id="process" ref={ref} className="section-padding">

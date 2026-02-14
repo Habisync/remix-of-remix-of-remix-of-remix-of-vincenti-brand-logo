@@ -5,10 +5,11 @@ import type { Json } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 import AdminLogin from "@/components/admin/AdminLogin";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import SectionEditor from "@/components/admin/SectionEditor";
+import BlockEditor from "@/components/admin/BlockEditor";
 import SettingsEditor from "@/components/admin/SettingsEditor";
 import IntegrationsPanel from "@/components/admin/IntegrationsPanel";
 import AdminDashboard from "@/components/admin/AdminDashboard";
+import ThemeController from "@/components/admin/ThemeController";
 import type { Session } from "@supabase/supabase-js";
 
 export default function Admin() {
@@ -86,7 +87,7 @@ export default function Admin() {
             />
           )}
           {activeTab === "sections" && (
-            <SectionEditor
+            <BlockEditor
               sections={sections || []}
               activeSection={activeSection}
               isLoading={sectionsLoading}
@@ -94,6 +95,7 @@ export default function Admin() {
               isSaving={updateContent.isPending}
             />
           )}
+          {activeTab === "theme" && <ThemeController />}
           {activeTab === "settings" && (
             <SettingsEditor
               settings={settings || []}

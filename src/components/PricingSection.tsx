@@ -1,15 +1,35 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
 interface PricingSectionProps {
   onOpenWizard: () => void;
 }
 
-const { pricing } = siteBlueprint;
+interface PricingContent {
+  id: string;
+  eyebrow: string;
+  title: string;
+  highlightedWord: string;
+  intro: string;
+  plans: Array<{
+    name: string;
+    badge?: string;
+    price: string;
+    subtitle: string;
+    tagline: string;
+    features: string[];
+  }>;
+  additionalServicesTitle: string;
+  additionalServices: Array<{ name: string; price: string }>;
+  additionalNote: string;
+}
 
 export default function PricingSection({ onOpenWizard }: PricingSectionProps) {
   const prefersReduced = useReducedMotion();
+  const { data: pricing } = useSectionContent<PricingContent>("pricing");
+
+  if (!pricing) return null;
 
   return (
     <section id="pricing" className="section-padding">
@@ -35,9 +55,7 @@ export default function PricingSection({ onOpenWizard }: PricingSectionProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`glass-surface rounded-lg p-6 sm:p-7 relative ${
-                plan.badge ? "border-primary/50 shadow-[var(--shadow-gold)]" : ""
-              }`}
+              className={`glass-surface rounded-lg p-6 sm:p-7 relative ${plan.badge ? "border-primary/50 shadow-[var(--shadow-gold)]" : ""}`}
             >
               {plan.badge && (
                 <span className="absolute -top-3 left-6 micro-type px-3 py-1 bg-primary text-primary-foreground rounded-full text-[0.6rem]">
@@ -60,11 +78,7 @@ export default function PricingSection({ onOpenWizard }: PricingSectionProps) {
               </ul>
               <button
                 onClick={onOpenWizard}
-                className={`w-full py-3 text-sm font-semibold rounded transition-colors ${
-                  plan.badge
-                    ? "bg-primary text-primary-foreground hover:bg-gold-light"
-                    : "border border-border text-foreground hover:border-primary hover:text-primary"
-                }`}
+                className={`w-full py-3 text-sm font-semibold rounded transition-colors ${plan.badge ? "bg-primary text-primary-foreground hover:bg-gold-light" : "border border-border text-foreground hover:border-primary hover:text-primary"}`}
               >
                 Get Started
               </button>
@@ -72,7 +86,6 @@ export default function PricingSection({ onOpenWizard }: PricingSectionProps) {
           ))}
         </div>
 
-        {/* Add-on services */}
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}

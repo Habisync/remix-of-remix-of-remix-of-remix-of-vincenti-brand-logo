@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Shield, BarChart3, Clock, Star } from "lucide-react";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
 const ICON_MAP: Record<string, typeof Shield> = {
   shield: Shield,
@@ -9,14 +9,23 @@ const ICON_MAP: Record<string, typeof Shield> = {
   star: Star,
 };
 
+interface ProofItem {
+  icon: string;
+  label: string;
+  desc: string;
+}
+
 export default function ProofStrip() {
   const prefersReduced = useReducedMotion();
+  const { data: proofStrip } = useSectionContent<ProofItem[]>("proofStrip");
+
+  if (!proofStrip) return null;
 
   return (
     <section className="py-8 sm:py-10 border-y border-border bg-card/50">
       <div className="section-container">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-          {siteBlueprint.proofStrip.map((p, i) => {
+          {proofStrip.map((p, i) => {
             const Icon = ICON_MAP[p.icon] || Shield;
             return (
               <motion.div

@@ -1,12 +1,28 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { siteBlueprint } from "@/lib/site-blueprint";
+import { useSectionContent } from "@/hooks/use-section-content";
 
 interface CTABannerProps {
   onOpenWizard: () => void;
 }
 
+interface CTAContent {
+  headline: string;
+  highlightedWord: string;
+  subtitle: string;
+  primaryCtaLabel: string;
+  secondaryCtaLabel: string;
+}
+
+interface BrandContent {
+  email: string;
+}
+
 export default function CTABanner({ onOpenWizard }: CTABannerProps) {
   const prefersReduced = useReducedMotion();
+  const { data: cta } = useSectionContent<CTAContent>("ctaBanner");
+  const { data: brand } = useSectionContent<BrandContent>("brand");
+
+  if (!cta) return null;
 
   return (
     <section className="section-padding relative overflow-hidden">
@@ -19,23 +35,21 @@ export default function CTABanner({ onOpenWizard }: CTABannerProps) {
           className="max-w-2xl mx-auto text-center"
         >
           <h2 className="font-serif font-semibold text-foreground mb-3">
-            Ready to maximise your <span className="gold-text">rental income</span>?
+            {cta.headline} <span className="gold-text">{cta.highlightedWord}</span>?
           </h2>
-          <p className="text-muted-foreground mb-6 max-w-lg mx-auto text-sm">
-            Get a free property assessment and discover how much more your Malta property could earn with professional management.
-          </p>
+          <p className="text-muted-foreground mb-6 max-w-lg mx-auto text-sm">{cta.subtitle}</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={onOpenWizard}
               className="px-7 py-3.5 text-sm font-semibold bg-primary text-primary-foreground rounded hover:bg-gold-light transition-all hover:shadow-lg hover:scale-[1.02]"
             >
-              Get Your Free Assessment
+              {cta.primaryCtaLabel}
             </button>
             <a
-              href={`mailto:${siteBlueprint.brand.email}`}
+              href={`mailto:${brand?.email || "info@christianopm.com"}`}
               className="px-7 py-3.5 text-sm font-medium text-foreground border border-border rounded hover:border-primary hover:text-primary transition-colors"
             >
-              Email Us Directly
+              {cta.secondaryCtaLabel}
             </a>
           </div>
         </motion.div>
