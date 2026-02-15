@@ -32,14 +32,14 @@ export default function PricingSection({ onOpenWizard }: PricingSectionProps) {
   if (!pricing) return null;
 
   return (
-    <section id="pricing" className="section-padding">
+    <section id="pricing" className="section-padding py-8 sm:py-12">
       <div className="section-container">
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-10 sm:mb-14"
+          className="text-center mb-6 sm:mb-8"
         >
           <p className="micro-type text-primary mb-2">{pricing.eyebrow}</p>
           <h2 className="font-serif font-semibold text-foreground">
@@ -94,7 +94,7 @@ export default function PricingSection({ onOpenWizard }: PricingSectionProps) {
           initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-10 sm:mt-14 max-w-3xl mx-auto"
+          className="mt-6 sm:mt-8 max-w-3xl mx-auto"
         >
           <h3 className="font-serif text-lg font-semibold text-foreground text-center mb-5">
             {pricing.additionalServicesTitle}

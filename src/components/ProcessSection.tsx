@@ -27,7 +27,7 @@ export default function ProcessSection({ onOpenWizard }: ProcessSectionProps) {
   if (!process) return null;
 
   return (
-    <section id="process" ref={ref} className="section-padding relative overflow-hidden">
+    <section id="process" ref={ref} className="section-padding relative overflow-hidden py-8 sm:py-12">
       {/* Subtle parallax background accent */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
@@ -38,7 +38,7 @@ export default function ProcessSection({ onOpenWizard }: ProcessSectionProps) {
       </motion.div>
 
       <div className="section-container relative z-10">
-        <motion.div className="text-center mb-10 sm:mb-14">
+        <motion.div className="text-center mb-6 sm:mb-8">
           <motion.div
             initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -80,7 +80,7 @@ export default function ProcessSection({ onOpenWizard }: ProcessSectionProps) {
           initial={prefersReduced ? {} : { opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-8 sm:mt-10"
+          className="text-center mt-5 sm:mt-6"
         >
           <button
             onClick={onOpenWizard}

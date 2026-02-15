@@ -22,13 +22,13 @@ export default function FAQSection() {
   if (!faq) return null;
 
   return (
-    <section id="faq" className="section-padding bg-card/30">
+    <section id="faq" className="section-padding py-8 sm:py-12 bg-card/30">
       <div className="section-container max-w-3xl">
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10 sm:mb-14"
+          className="text-center mb-6 sm:mb-8"
         >
           <p className="micro-type text-primary mb-2">{faq.eyebrow}</p>
           <h2 className="font-serif font-semibold text-foreground">

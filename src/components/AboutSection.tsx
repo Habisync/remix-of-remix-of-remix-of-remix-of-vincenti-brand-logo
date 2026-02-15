@@ -29,13 +29,13 @@ export default function AboutSection({ onOpenWizard }: AboutSectionProps) {
   if (!about) return null;
 
   return (
-    <section id="about" ref={ref} className="section-padding bg-card/30 relative overflow-hidden">
+    <section id="about" ref={ref} className="section-padding py-8 sm:py-12 bg-card/30 relative overflow-hidden">
       <div className="section-container w-full relative z-10">
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
-          className="text-center mb-12"
+          className="text-center mb-6 sm:mb-8"
         >
           <p className="micro-type text-primary mb-3">{about.eyebrow}</p>
           <h2 className="font-serif font-semibold text-foreground">

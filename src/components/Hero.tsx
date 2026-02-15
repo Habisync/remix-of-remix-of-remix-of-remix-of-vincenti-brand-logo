@@ -38,7 +38,7 @@ export default function Hero({ onOpenWizard }: HeroProps) {
   return (
     <section
       ref={ref}
-      className="relative flex items-end overflow-hidden min-h-[80vh] sm:min-h-[min(85vh,750px)]"
+      className="relative flex items-end overflow-hidden h-[100dvh]"
       style={{ paddingTop: "var(--header-height)" }}
     >
       {/* Parallax background - stays while text scrolls */}

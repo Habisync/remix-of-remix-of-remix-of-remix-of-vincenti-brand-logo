@@ -29,7 +29,7 @@ export default function CTABanner({ onOpenWizard }: CTABannerProps) {
   if (!cta) return null;
 
   return (
-    <section ref={ref} className="section-padding relative overflow-hidden">
+    <section ref={ref} className="section-padding py-8 sm:py-12 relative overflow-hidden">
       {/* Parallax gradient background */}
       <motion.div
         className="absolute inset-0"
