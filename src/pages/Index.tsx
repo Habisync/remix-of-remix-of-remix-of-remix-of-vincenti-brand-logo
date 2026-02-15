@@ -22,31 +22,31 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar onOpenWizard={openWizard} />
       <main id="main">
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <Hero onOpenWizard={openWizard} />
         </ScrollSection>
         <ScrollSection>
           <ProofStrip />
         </ScrollSection>
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <ProcessSection onOpenWizard={openWizard} />
         </ScrollSection>
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <PortfolioSection />
         </ScrollSection>
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <PricingSection onOpenWizard={openWizard} />
         </ScrollSection>
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <TestimonialsSection />
         </ScrollSection>
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <AboutSection onOpenWizard={openWizard} />
         </ScrollSection>
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <CTABanner onOpenWizard={openWizard} />
         </ScrollSection>
-        <ScrollSection>
+        <ScrollSection fitScreen>
           <FAQSection />
         </ScrollSection>
       </main>

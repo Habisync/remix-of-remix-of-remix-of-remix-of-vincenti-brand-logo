@@ -36,7 +36,7 @@ export default function PortfolioSection() {
   if (!portfolio) return null;
 
   return (
-    <section id="portfolio" ref={ref} className="section-padding bg-card/30 relative overflow-hidden">
+    <section id="portfolio" ref={ref} className="section-padding py-8 sm:py-12 bg-card/30 relative overflow-hidden">
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{ y: prefersReduced ? 0 : bgY }}
@@ -49,7 +49,7 @@ export default function PortfolioSection() {
           initial={prefersReduced ? {} : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
-          className="text-center mb-10 sm:mb-14"
+          className="text-center mb-6 sm:mb-8"
         >
           <p className="micro-type text-primary mb-2">{portfolio.eyebrow}</p>
           <h2 className="font-serif font-semibold text-foreground">
@@ -99,7 +99,7 @@ export default function PortfolioSection() {
           initial={prefersReduced ? {} : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center mt-8 sm:mt-10"
+          className="text-center mt-5 sm:mt-6"
         >
           <a
             href={portfolio.primaryCta.href}

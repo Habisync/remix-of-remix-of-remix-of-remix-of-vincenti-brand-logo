@@ -33,13 +33,13 @@ export default function TestimonialsSection() {
   const visible = items.slice(current * perPage, current * perPage + perPage);
 
   return (
-    <section id="testimonials" className="section-padding">
+    <section id="testimonials" className="section-padding py-8 sm:py-12">
       <div className="section-container w-full">
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
-          className="text-center mb-10 sm:mb-14"
+          className="text-center mb-6 sm:mb-8"
         >
           <p className="micro-type text-primary mb-3">{testimonials.eyebrow}</p>
           <h2 className="font-serif font-semibold text-foreground">
