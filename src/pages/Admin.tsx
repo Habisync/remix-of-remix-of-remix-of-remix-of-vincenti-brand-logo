@@ -37,7 +37,7 @@ function PageBuilderWrapper({ onSave, isSaving }: { onSave: (key: string, conten
 export default function Admin() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [activeTab, setActiveTab] = useState<string>("mirror");
   const [activeSection, setActiveSection] = useState<string>("hero");
   const { toast } = useToast();
 
