@@ -27,6 +27,21 @@ interface LayoutProps {
 export default function Layout({ children, mode = "home", hideFloatingCTA = false }: LayoutProps) {
   const [wizardOpen, setWizardOpen] = useState(false);
   const openWizard = () => setWizardOpen(true);
+  useCmsRealtime();
+
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      const data = e.data as { type?: string; sectionKey?: string } | null;
+      if (!data || typeof data !== "object") return;
+      if (data.type === "cms:scroll-to" && data.sectionKey) {
+        const el = document.querySelector(`[data-section-key="${data.sectionKey}"]`);
+        if (el) (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+    window.addEventListener("message", onMsg);
+    window.parent?.postMessage({ type: "cms:ready" }, "*");
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
 
   return (
     <WizardContext.Provider value={{ openWizard }}>
