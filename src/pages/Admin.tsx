@@ -16,6 +16,7 @@ import MediaManager from "@/components/admin/MediaManager";
 import ComponentLibrary from "@/components/admin/ComponentLibrary";
 import TemplatesManager from "@/components/admin/TemplatesManager";
 import ActivityFeed from "@/components/admin/ActivityFeed";
+import MirrorCanvas from "@/components/admin/MirrorCanvas";
 import type { Session } from "@supabase/supabase-js";
 
 function PageBuilderWrapper({ onSave, isSaving }: { onSave: (key: string, content: Json) => Promise<void>; isSaving: boolean }) {
