@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useCmsRealtime } from "@/hooks/use-cms-realtime";
 import { useCmsContent, useCmsSettings, useUpdateCmsContent, useUpdateCmsSetting } from "@/hooks/use-cms";
 import type { Json } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
