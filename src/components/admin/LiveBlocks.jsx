@@ -1037,7 +1037,34 @@ export function LiveReviewsLive({ d, onEdit }) {
 
 // ─── 24. PROPERTY SLIDER ─────────────────────────────────────────────────────
 export const LivePropertySlider = memo(({ d, onEdit }) => {
-  const { listings, loading, reload } = useGuestyListings({ limit: d.count || 6 });
+  const { listings, loading } = useGuestyListings({ limit: d.count || 6 });
+  return (
+    <section className="py-24 bg-[#0F0F10]">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+        <div className="text-center mb-12">
+          <InlineText value={d.label || "Featured"} onChange={onEdit && (v => onEdit("label", v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-3 block" />
+          <InlineText value={d.title || "Featured Properties"} onChange={onEdit && (v => onEdit("title", v))} tag="h2" className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#F5F5F0]" />
+        </div>
+        {loading ? (
+          <div className="text-center text-[#9A9A92]">Loading…</div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(listings || []).slice(0, d.count || 6).map((p, i) => (
+              <div key={p?._id || i} className="rounded-xl overflow-hidden bg-[#1A1A1B] border border-white/5">
+                {p?.picture?.regular && <img src={p.picture.regular} alt={p.title || ""} className="w-full h-48 object-cover" loading="lazy" />}
+                <div className="p-4">
+                  <div className="font-semibold text-[#F5F5F0]">{p?.title || p?.nickname || "Property"}</div>
+                  <div className="text-xs text-[#9A9A92] mt-1">{p?.address?.city || ""}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+});
+
 
 // ─── 25. NUMBERS / BIG STATS ─────────────────────────────────────────────────
 export const LiveNumbers = memo(({ d, onEdit }) => (
