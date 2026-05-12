@@ -12,7 +12,7 @@ const env = (import.meta as any).env || {};
 
 import { createRoot } from "react-dom/client";
 import "./index.css";
-// @ts-ignore - .js entry from ported CRA app
-import App from "./App.js";
+// @ts-ignore - JSX entry from ported CRA app
+import App from "./App.jsx";
 
 createRoot(document.getElementById("root")!).render(<App />);
