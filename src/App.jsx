@@ -66,6 +66,7 @@ function ScrollToHash() {
 function AppContent() {
   return (
     <>
+      <EditModeBridge />
       <AppSEO />
       <ScrollToHash />
       <Header />
