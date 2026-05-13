@@ -3,8 +3,10 @@
 // When ON: hover-outline editable text, click to focus, edits stream back to
 // parent via postMessage so the editor can persist them.
 // When OFF: passive — user can navigate the site normally.
+// Also re-applies persisted text overlays on every page so live edits survive reloads.
 
 import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const HL_STYLE_ID = "cvpm-edit-style";
 const STYLE_CSS = `
