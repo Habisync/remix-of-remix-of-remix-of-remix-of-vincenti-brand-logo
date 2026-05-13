@@ -1872,6 +1872,9 @@ export default function AdminPage() {
           <button onClick={() => setMode("studio")} className={`px-2.5 py-1 text-[9px] font-medium rounded transition-all ${mode === "studio" ? "bg-[#D4AF37] text-[#0a0a0b]" : "text-[#6a6a6e] hover:text-[#f0ede8]"}`}>
             <Layout className="w-3 h-3 inline mr-1" />Studio
           </button>
+          <button onClick={() => setMode("live")} className={`px-2.5 py-1 text-[9px] font-medium rounded transition-all ${mode === "live" ? "bg-[#D4AF37] text-[#0a0a0b]" : "text-[#6a6a6e] hover:text-[#f0ede8]"}`}>
+            <Eye className="w-3 h-3 inline mr-1" />Live
+          </button>
           <button onClick={() => setMode("dashboard")} className={`px-2.5 py-1 text-[9px] font-medium rounded transition-all ${mode === "dashboard" ? "bg-[#D4AF37] text-[#0a0a0b]" : "text-[#6a6a6e] hover:text-[#f0ede8]"}`}>
             <ChartBar className="w-3 h-3 inline mr-1" />Dashboard
           </button>
