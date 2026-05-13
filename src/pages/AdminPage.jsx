@@ -1941,6 +1941,13 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* Live Navigate Mode */}
+      {mode === "live" && (
+        <div className="flex-1 overflow-hidden">
+          <LiveNavigateMode initialUrl="/" />
+        </div>
+      )}
+
       {/* Studio Mode */}
       {mode === "studio" && (
         <div className="flex flex-1 overflow-hidden">
