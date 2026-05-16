@@ -1571,7 +1571,7 @@ const AdminDashboard = memo(({ adminKey }) => {
 // ============================================
 export default function AdminPage() {
   const navigate = useNavigate();
-  const { cms, isAdmin, verifyAdmin, logout, updateSection } = useCMS();
+  const { cms, isAdmin, session, verifyAdmin, logout, updateSection } = useCMS();
   
   const [adminKey, setAdminKey] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -1851,7 +1851,7 @@ export default function AdminPage() {
         </div>
         <h1 className="text-2xl font-bold text-[#f0ede8] mb-2">Studio Pro</h1>
         <p className="text-sm text-[#5a5a5e] mb-6">
-          {!localStorage.getItem("sb-auth-token") && (cms?.session ?? null) === null
+          {!session
             ? "Sign in to access the editor."
             : "Your account does not have admin access. Ask an existing admin to grant the role in user_roles."}
         </p>
