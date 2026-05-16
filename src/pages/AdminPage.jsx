@@ -1845,16 +1845,26 @@ export default function AdminPage() {
 
   if (!isAdmin) return (
     <div className="fixed inset-0 bg-[#0a0a0b] flex items-center justify-center z-[9999]">
-      <form onSubmit={e => { e.preventDefault(); verifyAdmin(adminKey).then(v => { if (v) { localStorage.setItem("cvpm_admin_key", adminKey); toast.success("Welcome!"); } else toast.error("Invalid key"); }); }} className="max-w-sm w-full px-6">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#a08550] flex items-center justify-center shadow-lg"><Sparkles className="w-8 h-8 text-[#0a0a0b]" /></div>
-          <h1 className="text-2xl font-bold text-[#f0ede8] mb-2">Studio Pro</h1>
-          <p className="text-sm text-[#5a5a5e]">Visual CMS Editor</p>
+      <div className="max-w-sm w-full px-6 text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#a08550] flex items-center justify-center shadow-lg">
+          <Sparkles className="w-8 h-8 text-[#0a0a0b]" />
         </div>
-        <Input type="password" placeholder="Enter admin key" value={adminKey} onChange={e => setAdminKey(e.target.value)} className="bg-[#111318] border-[#1e1e22] text-[#f0ede8] h-12 mb-4 text-center" />
-        <Button type="submit" className="w-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#0a0a0b] h-12 font-semibold">Access Editor</Button>
-        <p className="text-center text-[10px] text-[#3a3a3e] mt-6">Default: cvpm-admin-2026</p>
-      </form>
+        <h1 className="text-2xl font-bold text-[#f0ede8] mb-2">Studio Pro</h1>
+        <p className="text-sm text-[#5a5a5e] mb-6">
+          {!localStorage.getItem("sb-auth-token") && (cms?.session ?? null) === null
+            ? "Sign in to access the editor."
+            : "Your account does not have admin access. Ask an existing admin to grant the role in user_roles."}
+        </p>
+        <Button
+          onClick={() => navigate("/auth")}
+          className="w-full bg-[#D4AF37] hover:bg-[#E5C158] text-[#0a0a0b] h-11 font-semibold"
+        >
+          Sign In
+        </Button>
+        <p className="text-[10px] text-[#3a3a3e] mt-4">
+          First user: sign up, then have an existing admin assign the <code>admin</code> role in the database.
+        </p>
+      </div>
     </div>
   );
 
