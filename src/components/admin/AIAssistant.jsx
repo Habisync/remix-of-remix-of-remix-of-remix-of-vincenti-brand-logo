@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
-const API = process.env.REACT_APP_BACKEND_URL + "/api";
+import { supabase } from "@/integrations/supabase/client";
 
 // AI Action presets
 const AI_PRESETS = [
