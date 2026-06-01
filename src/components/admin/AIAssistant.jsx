@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
-const API = process.env.REACT_APP_BACKEND_URL + "/api";
+import { supabase } from "@/integrations/supabase/client";
 
 // AI Action presets
 const AI_PRESETS = [
@@ -83,31 +83,31 @@ export const AIAssistant = ({ cms, updateSection, setHasUnsavedChanges }) => {
     setConversation(prev => [...prev, { role: "user", content: finalPrompt }]);
 
     try {
-      const res = await fetch(`${API}/ai/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+      const { data, error } = await supabase.functions.invoke("cms-ai-generate", {
+        body: {
           prompt: finalPrompt,
+          mode: "freeform",
           context: {
-            brand: cms.brand?.name,
-            industry: "vacation rental property management",
+            brand: cms?.brand?.name || "Christiano Property Management",
+            industry: "luxury vacation rental property management",
             location: "Malta",
-          }
-        }),
+          },
+        },
       });
 
-      const data = await res.json();
-      
-      if (data.content) {
-        setResponse(data.content);
-        setConversation(prev => [...prev, { role: "assistant", content: data.content }]);
-      } else if (data.error) {
-        toast.error(data.error);
-        setConversation(prev => [...prev, { role: "assistant", content: `Error: ${data.error}` }]);
-      }
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      const text = typeof data?.content === "string"
+        ? data.content
+        : JSON.stringify(data?.content ?? "", null, 2);
+
+      setResponse(text);
+      setConversation(prev => [...prev, { role: "assistant", content: text }]);
     } catch (error) {
-      toast.error("AI generation failed. Please try again.");
-      setConversation(prev => [...prev, { role: "assistant", content: "Sorry, I encountered an error. Please try again." }]);
+      const msg = error?.message || "AI generation failed";
+      toast.error(msg);
+      setConversation(prev => [...prev, { role: "assistant", content: `Error: ${msg}` }]);
     } finally {
       setIsGenerating(false);
       setPrompt("");
