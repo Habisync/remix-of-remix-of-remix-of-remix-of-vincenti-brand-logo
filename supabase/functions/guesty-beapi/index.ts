@@ -20,9 +20,23 @@ async function getToken(): Promise<string> {
   if (cachedToken && cachedToken.expiresAt - 60_000 > now) return cachedToken.value;
   if (inflight) return inflight;
 
+  // Manual override: paste a known-good Guesty BE access token as GUESTY_ACCESS_TOKEN
+  // to bypass the rate-limited OAuth exchange. Expiry is read from the JWT `exp` claim.
+  const manual = Deno.env.get("GUESTY_ACCESS_TOKEN");
+  if (manual) {
+    let exp = now + 60 * 60 * 1000; // fallback 1h
+    try {
+      const payload = JSON.parse(atob(manual.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+      if (payload?.exp) exp = payload.exp * 1000;
+    } catch { /* ignore */ }
+    cachedToken = { value: manual, expiresAt: exp };
+    return manual;
+  }
+
   const clientId = Deno.env.get("GUESTY_CLIENT_ID");
   const clientSecret = Deno.env.get("GUESTY_CLIENT_SECRET");
   if (!clientId || !clientSecret) throw new Error("Guesty credentials not configured");
+
 
   inflight = (async () => {
     const basic = btoa(`${clientId}:${clientSecret}`);
