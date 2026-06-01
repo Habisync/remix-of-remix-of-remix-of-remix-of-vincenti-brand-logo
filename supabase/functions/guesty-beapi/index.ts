@@ -25,36 +25,42 @@ async function getToken(): Promise<string> {
   if (!clientId || !clientSecret) throw new Error("Guesty credentials not configured");
 
   inflight = (async () => {
-    const attempts: Array<{ url: string; scope?: string }> = [
+    const basic = btoa(`${clientId}:${clientSecret}`);
+    type Attempt = { url: string; scope?: string; useBasic?: boolean };
+    const attempts: Attempt[] = [
       { url: TOKEN_URLS[0], scope: "booking_engine:api" },
+      { url: TOKEN_URLS[0], scope: "booking_engine:api", useBasic: true },
       { url: TOKEN_URLS[0] },
+      { url: TOKEN_URLS[0], useBasic: true },
       { url: TOKEN_URLS[1], scope: "open-api" },
+      { url: TOKEN_URLS[1], scope: "open-api", useBasic: true },
       { url: TOKEN_URLS[1] },
     ];
-    let lastErr = "";
+    const errors: string[] = [];
     for (const a of attempts) {
-      const body = new URLSearchParams({
-        grant_type: "client_credentials",
-        client_id: clientId,
-        client_secret: clientSecret,
-        ...(a.scope ? { scope: a.scope } : {}),
-      });
-      const res = await fetch(a.url, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" },
-        body,
-      });
+      const params: Record<string, string> = { grant_type: "client_credentials" };
+      if (a.scope) params.scope = a.scope;
+      if (!a.useBasic) {
+        params.client_id = clientId;
+        params.client_secret = clientSecret;
+      }
+      const headers: Record<string, string> = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      };
+      if (a.useBasic) headers.Authorization = `Basic ${basic}`;
+      const res = await fetch(a.url, { method: "POST", headers, body: new URLSearchParams(params) });
       const text = await res.text();
       if (res.ok) {
         const json = JSON.parse(text);
         const expiresIn = (json.expires_in ?? 86400) * 1000;
         cachedToken = { value: json.access_token, expiresAt: Date.now() + expiresIn };
-        console.log(`[guesty] token via ${a.url} scope=${a.scope ?? "(none)"}`);
+        console.log(`[guesty] token via ${a.url} scope=${a.scope ?? "(none)"} basic=${!!a.useBasic}`);
         return cachedToken.value;
       }
-      lastErr = `${a.url} ${res.status}: ${text}`;
+      errors.push(`${a.url}${a.useBasic ? "[basic]" : ""}${a.scope ? `[${a.scope}]` : ""} → ${res.status}: ${text.slice(0, 200)}`);
     }
-    throw new Error(`Token error — ${lastErr}`);
+    throw new Error(`Guesty token request failed for all auth strategies. Verify GUESTY_CLIENT_ID/SECRET are Booking Engine credentials. Last errors: ${errors.join(" | ")}`);
   })();
 
   try {
