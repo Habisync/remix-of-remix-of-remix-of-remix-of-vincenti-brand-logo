@@ -1839,7 +1839,7 @@ export default function AdminPage() {
 
   const currentPageConfig = ALL_PAGES.find(p => p.id === page) || ALL_PAGES[0];
   const isCMSPage = currentPageConfig.type === "cms";
-  const previewUrl = `http://localhost:3000${currentPageConfig.url}`;
+  const previewUrl = `${window.location.origin}${currentPageConfig.url}`;
 
   if (isLoading) return <div className="fixed inset-0 bg-[#0a0a0b] flex items-center justify-center z-[9999]"><div className="animate-spin w-10 h-10 border-2 border-[#D4AF37] border-t-transparent rounded-full" /></div>;
 
@@ -2028,9 +2028,9 @@ export default function AdminPage() {
                     { label: "Palazzo Ducoss 8", url: "/property/693abb6d80cd6e002d2e8763" },
                     { label: "Villa with Pool", url: "/property/69ceb988571e1b00149f3c8b" },
                   ].map((link, i) => (
-                    <button key={i} onClick={() => { window.open(`http://localhost:3000${link.url}`, "_blank"); }} className="w-full text-left text-[9px] text-[#D4AF37] hover:text-[#E5C158] truncate">→ {link.label}</button>
+                    <button key={i} onClick={() => { window.open(`${window.location.origin}${link.url}`, "_blank"); }} className="w-full text-left text-[9px] text-[#D4AF37] hover:text-[#E5C158] truncate">→ {link.label}</button>
                   ))}
-                  <button onClick={() => window.open(`http://localhost:3000${currentPageConfig.url}`, "_blank")} className="flex items-center gap-1 text-[9px] text-[#D4AF37] hover:text-[#E5C158]">
+                  <button onClick={() => window.open(`${window.location.origin}${currentPageConfig.url}`, "_blank")} className="flex items-center gap-1 text-[9px] text-[#D4AF37] hover:text-[#E5C158]">
                     <ExternalLink className="w-3 h-3" /> Open in new tab
                   </button>
                 </div>
@@ -2057,7 +2057,7 @@ export default function AdminPage() {
               {/* Live preview toggle for CMS pages */}
               {isCMSPage && (
                 <button
-                  onClick={() => window.open(`http://localhost:3000${currentPageConfig.url}`, "_blank")}
+                  onClick={() => window.open(`${window.location.origin}${currentPageConfig.url}`, "_blank")}
                   className="flex items-center gap-1 text-[9px] text-[#5a5a5e] hover:text-[#D4AF37] border border-[#1e1e22] rounded px-2 py-0.5 transition-colors"
                   title="Open live preview in new tab"
                 >
@@ -2168,9 +2168,9 @@ export default function AdminPage() {
                     <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
                   </div>
                   <div className="flex-1 bg-[#1a1a1e] rounded text-[9px] text-[#5a5a5e] px-3 py-1 font-mono">
-                    localhost:3000{currentPageConfig.url}
+                    {window.location.host}{currentPageConfig.url}
                   </div>
-                  <button onClick={() => window.open(`http://localhost:3000${currentPageConfig.url}`, "_blank")} className="text-[#5a5a5e] hover:text-[#D4AF37]">
+                  <button onClick={() => window.open(`${window.location.origin}${currentPageConfig.url}`, "_blank")} className="text-[#5a5a5e] hover:text-[#D4AF37]">
                     <ExternalLink className="w-3.5 h-3.5" />
                   </button>
                 </div>
