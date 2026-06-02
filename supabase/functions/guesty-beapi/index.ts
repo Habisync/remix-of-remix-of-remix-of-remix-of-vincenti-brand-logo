@@ -12,10 +12,10 @@ const TOKEN_URLS = [
 ];
 const BEAPI_BASE = "https://booking.guesty.com/api";
 
-let cachedToken: { value: string; expiresAt: number } | null = null;
+let cachedToken: { value: string; expiresAt: number; source: "manual" | "oauth" } | null = null;
 let inflight: Promise<string> | null = null;
 
-async function getToken(): Promise<string> {
+async function getToken(options: { bypassManual?: boolean } = {}): Promise<string> {
   const now = Date.now();
   if (cachedToken && cachedToken.expiresAt - 60_000 > now) return cachedToken.value;
   if (inflight) return inflight;
@@ -23,13 +23,13 @@ async function getToken(): Promise<string> {
   // Manual override: paste a known-good Guesty BE access token as GUESTY_ACCESS_TOKEN
   // to bypass the rate-limited OAuth exchange. Expiry is read from the JWT `exp` claim.
   const manual = Deno.env.get("GUESTY_ACCESS_TOKEN");
-  if (manual) {
+  if (manual && !options.bypassManual) {
     let exp = now + 60 * 60 * 1000; // fallback 1h
     try {
       const payload = JSON.parse(atob(manual.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
       if (payload?.exp) exp = payload.exp * 1000;
     } catch { /* ignore */ }
-    cachedToken = { value: manual, expiresAt: exp };
+    cachedToken = { value: manual, expiresAt: exp, source: "manual" };
     return manual;
   }
 
@@ -68,7 +68,7 @@ async function getToken(): Promise<string> {
       if (res.ok) {
         const json = JSON.parse(text);
         const expiresIn = (json.expires_in ?? 86400) * 1000;
-        cachedToken = { value: json.access_token, expiresAt: Date.now() + expiresIn };
+        cachedToken = { value: json.access_token, expiresAt: Date.now() + expiresIn, source: "oauth" };
         console.log(`[guesty] token via ${a.url} scope=${a.scope ?? "(none)"} basic=${!!a.useBasic}`);
         return cachedToken.value;
       }
@@ -84,8 +84,8 @@ async function getToken(): Promise<string> {
   }
 }
 
-async function beapi(path: string, init: RequestInit = {}, attempt = 0): Promise<Response> {
-  const token = await getToken();
+async function beapi(path: string, init: RequestInit = {}, attempt = 0, bypassManualToken = false): Promise<Response> {
+  const token = await getToken({ bypassManual: bypassManualToken });
   const url = path.startsWith("http") ? path : `${BEAPI_BASE}${path.startsWith("/") ? path : "/" + path}`;
   const res = await fetch(url, {
     ...init,
@@ -97,8 +97,9 @@ async function beapi(path: string, init: RequestInit = {}, attempt = 0): Promise
     },
   });
   if ((res.status === 401 || res.status === 403) && attempt === 0) {
+    console.warn(`[guesty] ${res.status} from Booking Engine API; refreshing token and retrying with OAuth credentials`);
     cachedToken = null;
-    return beapi(path, init, 1);
+    return beapi(path, init, 1, true);
   }
   if (res.status === 429 && attempt < 2) {
     await new Promise((r) => setTimeout(r, 500 * (attempt + 1) + Math.random() * 200));
