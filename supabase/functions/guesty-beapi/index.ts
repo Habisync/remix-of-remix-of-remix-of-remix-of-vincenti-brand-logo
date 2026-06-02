@@ -204,6 +204,10 @@ Deno.serve(async (req) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("[guesty-beapi]", msg);
+    const action = new URL(req.url).searchParams.get("action") ?? "listings";
+    if (action === "listings") {
+      return json({ results: [], count: 0, degraded: true, error: msg }, 200);
+    }
     return json({ error: msg }, 500);
   }
 });
