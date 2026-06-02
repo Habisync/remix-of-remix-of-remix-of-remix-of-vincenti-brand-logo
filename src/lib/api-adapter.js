@@ -43,7 +43,13 @@ async function invokeGuesty(action, params = {}, body) {
     `guesty-beapi?${qs.toString()}`,
     { body }
   );
-  if (error) throw error;
+  if (error) {
+    console.warn(`[api-adapter] Guesty ${action} unavailable`, error);
+    if (["listings", "listing", "calendar", "payment-provider"].includes(action)) {
+      return action === "listings" ? { results: [], count: 0, degraded: true } : {};
+    }
+    throw error;
+  }
   return data;
 }
 
