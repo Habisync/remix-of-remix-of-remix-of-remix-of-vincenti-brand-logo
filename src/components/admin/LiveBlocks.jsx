@@ -369,51 +369,62 @@ export const LiveOwnersSection = memo(({ d, onEdit }) => (
 ));
 
 // ─── 3. ABOUT SECTION ────────────────────────────────────────────────────────
-export const LiveAbout = memo(({ d, onEdit }) => (
-  <section id="about" className="relative py-24 overflow-hidden bg-[#0F0F10]">
-    <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-      <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div className="order-2 lg:order-1">
-          <InlineText value={d.label || "About Us"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-          <h2 className="font-['Playfair_Display'] text-[clamp(2rem,5vw,3.5rem)] text-[#F5F5F0] mb-8 leading-tight">
-            <InlineText value={d.title || "We Know What a Good"} onChange={onEdit && (v => onEdit("title",v))} tag="span" />{" "}
-            <InlineText value={d.titleAccent || "Stay Feels Like"} onChange={onEdit && (v => onEdit("titleAccent",v))} tag="span" className="italic" />
-          </h2>
-          <div className="space-y-6 text-[#A1A1AA] leading-relaxed">
-            {(d.paragraphs || [
-              {text:"At Christiano Property Management, we specialize in managing properties across Malta, one of the Mediterranean's most sought-after destinations."},
-              {text:"With over 9 years of Superhost experience, we understand the unique appeal of the island and how to make your property stand out."},
-              {text:"We believe in transparency and provide detailed monthly reports so property owners are always in the loop."},
-            ]).map((p, i) => (
-              <InlineText
-                key={i}
-                value={p.text}
-                onChange={onEdit && (v => { const ps=[...(d.paragraphs||[])]; ps[i]={...ps[i],text:v}; onEdit("paragraphs",ps); })}
-                tag="p" multiline
+export const LiveAbout = memo(({ d, onEdit }) => {
+  const reveal = { hidden: { opacity: 0, y: 28 }, show: (i=0) => ({ opacity: 1, y: 0, transition: { duration: 0.8, delay: i*0.08, ease: HERO_EASE } }) };
+  return (
+    <section id="about" className="relative py-28 md:py-36 overflow-hidden bg-[#0F0F10]">
+      {/* atmospheric gold wash */}
+      <div className="pointer-events-none absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.08),transparent_70%)]" />
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 relative">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-16 lg:gap-24 items-center">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }} className="order-2 lg:order-1">
+            <motion.div variants={reveal} custom={0} className="flex items-center gap-3 mb-6">
+              <span className="h-px w-10 bg-[#D4AF37]/60" />
+              <InlineText value={d.label || "About Us"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+            </motion.div>
+            <motion.h2 variants={reveal} custom={1} className="font-['Playfair_Display'] text-[clamp(2.25rem,5vw,3.75rem)] text-[#F5F5F0] mb-10 leading-[1.05]">
+              <InlineText value={d.title || "We Know What a Good"} onChange={onEdit && (v => onEdit("title",v))} tag="span" />{" "}
+              <InlineText value={d.titleAccent || "Stay Feels Like"} onChange={onEdit && (v => onEdit("titleAccent",v))} tag="span" className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#B8962F]" />
+            </motion.h2>
+            <div className="space-y-6 text-[#A1A1AA] text-[17px] leading-[1.75]">
+              {(d.paragraphs || [
+                {text:"At Christiano Property Management, we specialize in managing properties across Malta, one of the Mediterranean's most sought-after destinations."},
+                {text:"With over 9 years of Superhost experience, we understand the unique appeal of the island and how to make your property stand out."},
+                {text:"We believe in transparency and provide detailed monthly reports so property owners are always in the loop."},
+              ]).map((p, i) => (
+                <motion.div key={i} variants={reveal} custom={2+i}>
+                  <InlineText
+                    value={p.text}
+                    onChange={onEdit && (v => { const ps=[...(d.paragraphs||[])]; ps[i]={...ps[i],text:v}; onEdit("paragraphs",ps); })}
+                    tag="p" multiline
+                  />
+                </motion.div>
+              ))}
+            </div>
+            <motion.div variants={reveal} custom={6} className="flex gap-4 mt-10">
+              <Button className="group bg-transparent border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0F0F10] rounded-none uppercase text-xs tracking-[0.22em] px-7 py-5 transition-all duration-500">
+                <MessageCircle className="w-4 h-4 mr-2" />
+                <InlineText value={d.ctaText || "Get in Touch"} onChange={onEdit && (v => onEdit("ctaText",v))} />
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </motion.div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, scale: 1.04 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 1.2, ease: HERO_EASE }} className="order-1 lg:order-2 relative">
+            <div className="aspect-[4/5] overflow-hidden bg-[#161618] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)]">
+              <img
+                src={d.image || "https://primary.jwwb.nl/public/i/m/x/temp-jszjykaojetbmrgovpoe/img_7990-standard.jpg"}
+                alt=""
+                className="w-full h-full object-cover transition-transform duration-[1.4s] hover:scale-105"
               />
-            ))}
-          </div>
-          <div className="flex gap-4 mt-8">
-            <Button className="bg-transparent border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0F0F10] rounded-none uppercase text-sm tracking-widest px-6 py-4">
-              <MessageCircle className="w-4 h-4 mr-2" />
-              <InlineText value={d.ctaText || "Get in Touch"} onChange={onEdit && (v => onEdit("ctaText",v))} />
-            </Button>
-          </div>
-        </div>
-        <div className="order-1 lg:order-2 relative">
-          <div className="aspect-[4/3] overflow-hidden bg-[#161618]">
-            <img
-              src={d.image || "https://primary.jwwb.nl/public/i/m/x/temp-jszjykaojetbmrgovpoe/img_7990-standard.jpg"}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="absolute -bottom-4 -left-4 w-24 h-24 border-2 border-[#D4AF37]/30 hidden lg:block" />
+            </div>
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 border border-[#D4AF37]/40 hidden lg:block" />
+            <div className="absolute -top-6 -right-6 w-20 h-20 border border-[#D4AF37]/20 hidden lg:block" />
+          </motion.div>
         </div>
       </div>
-    </div>
-  </section>
-));
+    </section>
+  );
+});
 
 // ─── 4. PROPERTIES SECTION — fetches REAL Guesty data ───────────────────────
 // ─── 4. PROPERTIES — ALL DATA LIVE FROM GUESTY (no hardcoded fields) ─────────
@@ -423,76 +434,98 @@ export const LiveProperties = memo(({ d, onEdit }) => {
     limit: d.limit || d.showCount || 6,
     filters: { checkIn: d.checkIn||"", checkOut: d.checkOut||"", guests: d.minGuests||0, bedrooms: d.minBedrooms||0 }
   });
+  const count = d.limit || d.showCount || 6;
   return (
-    <section className="relative py-24 bg-[#0A0A0B] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-          <div>
-            <InlineText value={d.label || "Featured Properties"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-            <InlineText value={d.title || "Explore Our Portfolio"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#F5F5F0] leading-tight" />
+    <section className="relative py-28 md:py-36 bg-[#0A0A0B] overflow-hidden">
+      {/* subtle grain wash */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04] mix-blend-overlay" style={{ backgroundImage: "radial-gradient(circle at 20% 20%, #D4AF37 0px, transparent 1px), radial-gradient(circle at 80% 60%, #D4AF37 0px, transparent 1px)", backgroundSize: "32px 32px" }} />
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 relative">
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, ease: HERO_EASE }}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="h-px w-10 bg-[#D4AF37]/60" />
+              <InlineText value={d.label || "Featured Properties"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+            </div>
+            <InlineText value={d.title || "Explore Our Portfolio"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-[clamp(2rem,4.4vw,3.25rem)] text-[#F5F5F0] leading-[1.05]" />
           </div>
           {d.ctaText && (
-            <a href="/properties" className="flex items-center gap-2 border border-white/20 text-[#F5F5F0] hover:border-[#D4AF37] text-sm uppercase tracking-widest px-6 py-3 transition-all self-start">
+            <a href="/properties" className="group inline-flex items-center gap-3 border border-white/15 text-[#F5F5F0] hover:border-[#D4AF37] hover:text-[#D4AF37] text-[11px] uppercase tracking-[0.28em] px-7 py-4 transition-all duration-500 self-start">
               <InlineText value={d.ctaText} onChange={onEdit && (v => onEdit("ctaText",v))} />
-              <ArrowRight className="w-4 h-4 shrink-0" />
+              <ArrowRight className="w-4 h-4 shrink-0 group-hover:translate-x-1 transition-transform" />
             </a>
           )}
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading && Array.from({length: d.limit||d.showCount||6}).map((_,i) => <PropSkeleton key={i} />)}
+        </motion.div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+          {loading && Array.from({length: count}).map((_,i) => <PropSkeleton key={i} />)}
           {!loading && error && (
-            <div className="col-span-3 py-12 text-center">
+            <div className="col-span-3 py-16 text-center">
               <AlertCircle className="w-10 h-10 text-[#A1A1AA] opacity-30 mx-auto mb-3" />
               <p className="text-sm text-[#A1A1AA] mb-3">{error}</p>
               <button onClick={reload} className="text-xs text-[#D4AF37] flex items-center gap-1.5 mx-auto"><RefreshCw size={12}/>Retry</button>
             </div>
           )}
-          {!loading && !error && listings.slice(0, d.limit||d.showCount||6).map(l => <ListingCard key={l._id} listing={l} />)}
+          {!loading && !error && listings.slice(0, count).map((l, i) => (
+            <motion.div key={l._id} initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, delay: (i % 3) * 0.1, ease: HERO_EASE }}>
+              <ListingCard listing={l} />
+            </motion.div>
+          ))}
         </div>
-        {!loading && <div className="mt-4 flex justify-end"><button onClick={reload} className="text-[11px] text-[#D4AF37]/40 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"><RefreshCw size={10}/>Refresh from Guesty</button></div>}
+        {!loading && <div className="mt-6 flex justify-end"><button onClick={reload} className="text-[10px] uppercase tracking-[0.22em] text-[#D4AF37]/40 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"><RefreshCw size={10}/>Refresh from Guesty</button></div>}
       </div>
     </section>
   );
 });
 
 // ─── 5. STATS BAR ────────────────────────────────────────────────────────────
-export const LiveStats = memo(({ d, onEdit }) => (
-  <section className="py-8 bg-[#0F0F10] border-y border-white/5">
-    <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-      <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
-        {(d.items || [
-          {value:"9+",label:"Years Superhost"},
-          {value:"100%",label:"Response Rate"},
-          {value:"4.9★",label:"Avg Rating"},
-          {value:"40%",label:"Revenue Boost"},
-        ]).map((s, i) => (
-          <div key={i} className="flex items-center gap-3">
-            <InlineText
-              value={s.value}
-              onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],value:v}; onEdit("items",items); })}
-              tag="span" className="font-['Playfair_Display'] text-3xl text-[#D4AF37]"
-            />
-            <InlineText
-              value={s.label}
-              onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],label:v}; onEdit("items",items); })}
-              tag="span" className="text-sm text-[#A1A1AA] leading-tight"
-            />
-          </div>
-        ))}
+export const LiveStats = memo(({ d, onEdit }) => {
+  const items = d.items || [
+    {value:"9+",label:"Years Superhost"},
+    {value:"100%",label:"Response Rate"},
+    {value:"4.9★",label:"Avg Rating"},
+    {value:"40%",label:"Revenue Boost"},
+  ];
+  return (
+    <section className="py-14 bg-gradient-to-b from-[#0F0F10] to-[#0A0A0B] border-y border-[#D4AF37]/10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 items-stretch">
+          {items.map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.7, delay: i*0.08, ease: HERO_EASE }}
+              className={`flex flex-col items-center justify-center text-center py-4 ${i>0 ? "md:border-l border-[#D4AF37]/15" : ""} ${i===2 ? "border-l md:border-l border-[#D4AF37]/15" : ""}`}>
+              <InlineText
+                value={s.value}
+                onChange={onEdit && (v => { const it=[...items]; it[i]={...it[i],value:v}; onEdit("items",it); })}
+                tag="span" className="font-['Playfair_Display'] text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-[#F3E5AB] to-[#D4AF37]"
+              />
+              <InlineText
+                value={s.label}
+                onChange={onEdit && (v => { const it=[...items]; it[i]={...it[i],label:v}; onEdit("items",it); })}
+                tag="span" className="mt-2 text-[10px] uppercase tracking-[0.22em] text-[#A1A1AA]"
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-));
+    </section>
+  );
+});
 
 // ─── 6. FEATURES GRID ────────────────────────────────────────────────────────
 export const LiveFeatures = memo(({ d, onEdit }) => (
-  <section className="py-24 bg-[#0F0F10]">
+  <section className="py-28 md:py-36 bg-[#0F0F10] relative overflow-hidden">
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
     <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-      <div className="text-center mb-12">
-        <InlineText value={d.label || "What We Do"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-        <InlineText value={d.title || "Full-service property care"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#F5F5F0]" />
-      </div>
-      <div className={`grid md:grid-cols-2 ${d.columns === "4" ? "lg:grid-cols-4" : d.columns === "2" ? "lg:grid-cols-2" : "lg:grid-cols-3"} gap-6`}>
+      <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.8, ease: HERO_EASE }} className="text-center mb-16 max-w-2xl mx-auto">
+        <div className="flex items-center justify-center gap-3 mb-5">
+          <span className="h-px w-8 bg-[#D4AF37]/60" />
+          <InlineText value={d.label || "What We Do"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+          <span className="h-px w-8 bg-[#D4AF37]/60" />
+        </div>
+        <InlineText value={d.title || "Full-service property care"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-[clamp(2rem,4.2vw,3.25rem)] text-[#F5F5F0] leading-[1.1]" />
+      </motion.div>
+      <div className={`grid md:grid-cols-2 ${d.columns === "4" ? "lg:grid-cols-4" : d.columns === "2" ? "lg:grid-cols-2" : "lg:grid-cols-3"} gap-px bg-[#D4AF37]/10`}>
         {(d.items || [
           {icon:"Sparkles",title:"Listing & Marketing",desc:"Professional photography, multi-channel listings, and smart pricing."},
           {icon:"ClipboardList",title:"Booking Management",desc:"24/7 guest communication and seamless check-in coordination."},
@@ -500,11 +533,16 @@ export const LiveFeatures = memo(({ d, onEdit }) => (
         ]).map((f, i) => {
           const Icon = ICON_MAP[f.icon] || Star;
           return (
-            <div key={i} className="bg-[#161618] p-6 border border-white/5 hover:border-[#D4AF37]/20 transition-all">
-              <Icon className="w-10 h-10 text-[#D4AF37] mb-4" />
-              <InlineText value={f.title} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],title:v}; onEdit("items",items); })} tag="h3" className="text-[#F5F5F0] font-semibold mb-2" />
-              <InlineText value={f.desc} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],desc:v}; onEdit("items",items); })} tag="p" multiline className="text-[#A1A1AA] text-sm leading-relaxed" />
-            </div>
+            <motion.div key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.7, delay: i*0.08, ease: HERO_EASE }}
+              className="group relative bg-[#0F0F10] p-10 transition-all duration-500 hover:bg-[#13130f]">
+              <div className="absolute top-0 left-0 h-px w-0 bg-gradient-to-r from-[#D4AF37] to-transparent group-hover:w-full transition-all duration-700" />
+              <div className="w-14 h-14 mb-6 flex items-center justify-center border border-[#D4AF37]/30 group-hover:border-[#D4AF37] transition-colors duration-500">
+                <Icon className="w-6 h-6 text-[#D4AF37]" />
+              </div>
+              <InlineText value={f.title} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],title:v}; onEdit("items",items); })} tag="h3" className="font-['Playfair_Display'] text-2xl text-[#F5F5F0] mb-3" />
+              <InlineText value={f.desc} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],desc:v}; onEdit("items",items); })} tag="p" multiline className="text-[#A1A1AA] text-[15px] leading-[1.7]" />
+            </motion.div>
           );
         })}
       </div>
@@ -518,35 +556,43 @@ export const LiveTestimonials = memo(({ d, onEdit }) => {
   const items = d.items || [];
   const item = items[current] || items[0] || {};
   return (
-    <section className="relative py-24 overflow-hidden">
-      <div className="max-w-5xl mx-auto px-6 md:px-12 lg:px-20">
-        <div className="text-center mb-16">
-          <InlineText value={d.label || "Guest Reviews"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-          <InlineText value={d.title || "What Our Guests Say"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#F5F5F0]" />
-        </div>
+    <section className="relative py-28 md:py-36 overflow-hidden bg-[#0A0A0B]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06),transparent_60%)]" />
+      <div className="max-w-5xl mx-auto px-6 md:px-12 lg:px-20 relative">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.8, ease: HERO_EASE }} className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <span className="h-px w-8 bg-[#D4AF37]/60" />
+            <InlineText value={d.label || "Guest Reviews"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+            <span className="h-px w-8 bg-[#D4AF37]/60" />
+          </div>
+          <InlineText value={d.title || "What Our Guests Say"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-[clamp(2rem,4.2vw,3.25rem)] text-[#F5F5F0] leading-[1.1]" />
+        </motion.div>
         {items.length > 0 && (
-          <div className="relative bg-[#161618] border border-white/5 p-8 md:p-12">
-            <Quote className="absolute top-8 left-8 w-12 h-12 text-[#D4AF37]/20" />
+          <motion.div key={current} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: HERO_EASE }}
+            className="relative px-6 md:px-16 py-12 md:py-16">
+            <Quote className="absolute top-0 left-0 w-20 h-20 text-[#D4AF37]/15" />
+            <Quote className="absolute bottom-0 right-0 w-20 h-20 text-[#D4AF37]/15 rotate-180" />
             <div className="relative z-10">
-              <div className="flex gap-1 mb-6 justify-center">
+              <div className="flex gap-1.5 mb-8 justify-center">
                 {[...Array(5)].map((_, j) => (
-                  <Star key={j} className={`w-5 h-5 ${j < (item.rating || 5) ? "text-[#D4AF37] fill-[#D4AF37]" : "text-[#A1A1AA]"}`} />
+                  <Star key={j} className={`w-4 h-4 ${j < (item.rating || 5) ? "text-[#D4AF37] fill-[#D4AF37]" : "text-[#A1A1AA]/30"}`} />
                 ))}
               </div>
-              <blockquote className="text-lg md:text-xl text-[#F5F5F0] text-center mb-8 leading-relaxed max-w-3xl mx-auto">
+              <blockquote className="font-['Playfair_Display'] italic text-2xl md:text-3xl text-[#F5F5F0] text-center mb-10 leading-[1.4] max-w-3xl mx-auto">
                 "{item.text}"
               </blockquote>
               <div className="text-center">
-                <p className="text-[#F5F5F0] font-semibold">{item.name}</p>
-                <p className="text-[#A1A1AA] text-sm">{item.date}</p>
+                <div className="inline-block h-px w-12 bg-[#D4AF37]/40 mb-4" />
+                <p className="text-[#F5F5F0] font-medium tracking-wide">{item.name}</p>
+                <p className="text-[#A1A1AA] text-xs uppercase tracking-[0.22em] mt-1">{item.date}</p>
               </div>
             </div>
-            <div className="flex justify-center gap-2 mt-8">
+            <div className="flex justify-center gap-2 mt-12">
               {items.map((_, i) => (
-                <button key={i} onClick={() => setCurrent(i)} className={`h-2 rounded-full transition-all ${i === current ? "bg-[#D4AF37] w-6" : "bg-white/20 hover:bg-white/40 w-2"}`} />
+                <button key={i} onClick={() => setCurrent(i)} className={`h-px transition-all duration-500 ${i === current ? "bg-[#D4AF37] w-12" : "bg-white/20 hover:bg-white/40 w-6"}`} aria-label={`Review ${i+1}`} />
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
