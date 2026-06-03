@@ -479,33 +479,38 @@ export const LiveProperties = memo(({ d, onEdit }) => {
 });
 
 // ─── 5. STATS BAR ────────────────────────────────────────────────────────────
-export const LiveStats = memo(({ d, onEdit }) => (
-  <section className="py-8 bg-[#0F0F10] border-y border-white/5">
-    <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-      <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
-        {(d.items || [
-          {value:"9+",label:"Years Superhost"},
-          {value:"100%",label:"Response Rate"},
-          {value:"4.9★",label:"Avg Rating"},
-          {value:"40%",label:"Revenue Boost"},
-        ]).map((s, i) => (
-          <div key={i} className="flex items-center gap-3">
-            <InlineText
-              value={s.value}
-              onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],value:v}; onEdit("items",items); })}
-              tag="span" className="font-['Playfair_Display'] text-3xl text-[#D4AF37]"
-            />
-            <InlineText
-              value={s.label}
-              onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],label:v}; onEdit("items",items); })}
-              tag="span" className="text-sm text-[#A1A1AA] leading-tight"
-            />
-          </div>
-        ))}
+export const LiveStats = memo(({ d, onEdit }) => {
+  const items = d.items || [
+    {value:"9+",label:"Years Superhost"},
+    {value:"100%",label:"Response Rate"},
+    {value:"4.9★",label:"Avg Rating"},
+    {value:"40%",label:"Revenue Boost"},
+  ];
+  return (
+    <section className="py-14 bg-gradient-to-b from-[#0F0F10] to-[#0A0A0B] border-y border-[#D4AF37]/10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 items-stretch">
+          {items.map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.7, delay: i*0.08, ease: HERO_EASE }}
+              className={`flex flex-col items-center justify-center text-center py-4 ${i>0 ? "md:border-l border-[#D4AF37]/15" : ""} ${i===2 ? "border-l md:border-l border-[#D4AF37]/15" : ""}`}>
+              <InlineText
+                value={s.value}
+                onChange={onEdit && (v => { const it=[...items]; it[i]={...it[i],value:v}; onEdit("items",it); })}
+                tag="span" className="font-['Playfair_Display'] text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-[#F3E5AB] to-[#D4AF37]"
+              />
+              <InlineText
+                value={s.label}
+                onChange={onEdit && (v => { const it=[...items]; it[i]={...it[i],label:v}; onEdit("items",it); })}
+                tag="span" className="mt-2 text-[10px] uppercase tracking-[0.22em] text-[#A1A1AA]"
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-));
+    </section>
+  );
+});
 
 // ─── 6. FEATURES GRID ────────────────────────────────────────────────────────
 export const LiveFeatures = memo(({ d, onEdit }) => (
