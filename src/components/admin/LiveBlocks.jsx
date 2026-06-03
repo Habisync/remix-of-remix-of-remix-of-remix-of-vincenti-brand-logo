@@ -369,51 +369,62 @@ export const LiveOwnersSection = memo(({ d, onEdit }) => (
 ));
 
 // ─── 3. ABOUT SECTION ────────────────────────────────────────────────────────
-export const LiveAbout = memo(({ d, onEdit }) => (
-  <section id="about" className="relative py-24 overflow-hidden bg-[#0F0F10]">
-    <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-      <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div className="order-2 lg:order-1">
-          <InlineText value={d.label || "About Us"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-          <h2 className="font-['Playfair_Display'] text-[clamp(2rem,5vw,3.5rem)] text-[#F5F5F0] mb-8 leading-tight">
-            <InlineText value={d.title || "We Know What a Good"} onChange={onEdit && (v => onEdit("title",v))} tag="span" />{" "}
-            <InlineText value={d.titleAccent || "Stay Feels Like"} onChange={onEdit && (v => onEdit("titleAccent",v))} tag="span" className="italic" />
-          </h2>
-          <div className="space-y-6 text-[#A1A1AA] leading-relaxed">
-            {(d.paragraphs || [
-              {text:"At Christiano Property Management, we specialize in managing properties across Malta, one of the Mediterranean's most sought-after destinations."},
-              {text:"With over 9 years of Superhost experience, we understand the unique appeal of the island and how to make your property stand out."},
-              {text:"We believe in transparency and provide detailed monthly reports so property owners are always in the loop."},
-            ]).map((p, i) => (
-              <InlineText
-                key={i}
-                value={p.text}
-                onChange={onEdit && (v => { const ps=[...(d.paragraphs||[])]; ps[i]={...ps[i],text:v}; onEdit("paragraphs",ps); })}
-                tag="p" multiline
+export const LiveAbout = memo(({ d, onEdit }) => {
+  const reveal = { hidden: { opacity: 0, y: 28 }, show: (i=0) => ({ opacity: 1, y: 0, transition: { duration: 0.8, delay: i*0.08, ease: HERO_EASE } }) };
+  return (
+    <section id="about" className="relative py-28 md:py-36 overflow-hidden bg-[#0F0F10]">
+      {/* atmospheric gold wash */}
+      <div className="pointer-events-none absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.08),transparent_70%)]" />
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 relative">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-16 lg:gap-24 items-center">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }} className="order-2 lg:order-1">
+            <motion.div variants={reveal} custom={0} className="flex items-center gap-3 mb-6">
+              <span className="h-px w-10 bg-[#D4AF37]/60" />
+              <InlineText value={d.label || "About Us"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+            </motion.div>
+            <motion.h2 variants={reveal} custom={1} className="font-['Playfair_Display'] text-[clamp(2.25rem,5vw,3.75rem)] text-[#F5F5F0] mb-10 leading-[1.05]">
+              <InlineText value={d.title || "We Know What a Good"} onChange={onEdit && (v => onEdit("title",v))} tag="span" />{" "}
+              <InlineText value={d.titleAccent || "Stay Feels Like"} onChange={onEdit && (v => onEdit("titleAccent",v))} tag="span" className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#B8962F]" />
+            </motion.h2>
+            <div className="space-y-6 text-[#A1A1AA] text-[17px] leading-[1.75]">
+              {(d.paragraphs || [
+                {text:"At Christiano Property Management, we specialize in managing properties across Malta, one of the Mediterranean's most sought-after destinations."},
+                {text:"With over 9 years of Superhost experience, we understand the unique appeal of the island and how to make your property stand out."},
+                {text:"We believe in transparency and provide detailed monthly reports so property owners are always in the loop."},
+              ]).map((p, i) => (
+                <motion.div key={i} variants={reveal} custom={2+i}>
+                  <InlineText
+                    value={p.text}
+                    onChange={onEdit && (v => { const ps=[...(d.paragraphs||[])]; ps[i]={...ps[i],text:v}; onEdit("paragraphs",ps); })}
+                    tag="p" multiline
+                  />
+                </motion.div>
+              ))}
+            </div>
+            <motion.div variants={reveal} custom={6} className="flex gap-4 mt-10">
+              <Button className="group bg-transparent border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0F0F10] rounded-none uppercase text-xs tracking-[0.22em] px-7 py-5 transition-all duration-500">
+                <MessageCircle className="w-4 h-4 mr-2" />
+                <InlineText value={d.ctaText || "Get in Touch"} onChange={onEdit && (v => onEdit("ctaText",v))} />
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </motion.div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, scale: 1.04 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 1.2, ease: HERO_EASE }} className="order-1 lg:order-2 relative">
+            <div className="aspect-[4/5] overflow-hidden bg-[#161618] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)]">
+              <img
+                src={d.image || "https://primary.jwwb.nl/public/i/m/x/temp-jszjykaojetbmrgovpoe/img_7990-standard.jpg"}
+                alt=""
+                className="w-full h-full object-cover transition-transform duration-[1.4s] hover:scale-105"
               />
-            ))}
-          </div>
-          <div className="flex gap-4 mt-8">
-            <Button className="bg-transparent border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0F0F10] rounded-none uppercase text-sm tracking-widest px-6 py-4">
-              <MessageCircle className="w-4 h-4 mr-2" />
-              <InlineText value={d.ctaText || "Get in Touch"} onChange={onEdit && (v => onEdit("ctaText",v))} />
-            </Button>
-          </div>
-        </div>
-        <div className="order-1 lg:order-2 relative">
-          <div className="aspect-[4/3] overflow-hidden bg-[#161618]">
-            <img
-              src={d.image || "https://primary.jwwb.nl/public/i/m/x/temp-jszjykaojetbmrgovpoe/img_7990-standard.jpg"}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="absolute -bottom-4 -left-4 w-24 h-24 border-2 border-[#D4AF37]/30 hidden lg:block" />
+            </div>
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 border border-[#D4AF37]/40 hidden lg:block" />
+            <div className="absolute -top-6 -right-6 w-20 h-20 border border-[#D4AF37]/20 hidden lg:block" />
+          </motion.div>
         </div>
       </div>
-    </div>
-  </section>
-));
+    </section>
+  );
+});
 
 // ─── 4. PROPERTIES SECTION — fetches REAL Guesty data ───────────────────────
 // ─── 4. PROPERTIES — ALL DATA LIVE FROM GUESTY (no hardcoded fields) ─────────
