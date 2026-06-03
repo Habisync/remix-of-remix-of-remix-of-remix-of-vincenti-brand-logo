@@ -4,6 +4,7 @@
  * Used exclusively by AdminPage.jsx canvas.
  */
 import { useState, useEffect, useRef, useCallback, memo } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight, Star, Check, X, Users, TrendingUp, Sparkles, ClipboardList,
   Building, Home, ChevronRight, MessageCircle, Quote, HeartHandshake,
