@@ -172,7 +172,7 @@ export const LiveHero = memo(({ d, onEdit }) => {
   ];
 
   return (
-    <section className="relative min-h-[88dvh] flex items-center overflow-hidden bg-[#0A0A0B] noise-overlay">
+    <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-[#0A0A0B] noise-overlay">
       {/* Parallax background */}
       <motion.div className="absolute inset-0 will-change-transform" style={{ y: bgY, scale: bgScale }}>
         <img
