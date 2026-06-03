@@ -153,78 +153,150 @@ export const InlineText = memo(({ value, onChange, tag: Tag = "span", className 
   );
 });
 
-// ─── 1. HERO — exact match of LandingPage hero ──────────────────────────────
-export const LiveHero = memo(({ d, onEdit }) => (
-  <section className="relative min-h-[540px] flex items-center overflow-hidden bg-[#0F0F10]">
-    <div className="absolute inset-0">
-      <img
-        src={d.backgroundImage || "https://images.unsplash.com/photo-1771218830084-fdd272e149a1?w=1920&q=80"}
-        alt=""
-        className="w-full h-[120%] object-cover"
-      />
-    </div>
-    <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F10] via-[#0F0F10]/50 to-transparent" />
-    <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F10]/60 to-transparent" />
-    <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-16">
-      <div className="max-w-3xl">
-        <div className="inline-block px-4 py-2 border border-[#D4AF37]/30 bg-[#D4AF37]/5 mb-6">
-          <InlineText
-            value={d.badge || "Malta's Premier Property Management"}
-            onChange={onEdit && (v => onEdit("badge", v))}
-            className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-medium"
-          />
-        </div>
-        <h1 className="font-['Playfair_Display'] text-[clamp(2.5rem,6vw,5rem)] text-[#F5F5F0] mb-6 leading-[1.05]">
-          <InlineText value={d.headline || "Your Home in Malta,"} onChange={onEdit && (v => onEdit("headline", v))} tag="span" />
-          <br />
-          <InlineText
-            value={d.headlineAccent || "Looked After Like a Hotel"}
-            onChange={onEdit && (v => onEdit("headlineAccent", v))}
-            tag="span"
-            className="italic"
-            style={{ background: "linear-gradient(135deg,#D4AF37,#E5C158)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
-          />
-        </h1>
-        <InlineText
-          value={d.subheadline || "Handpicked luxury accommodations across Malta's most sought-after locations."}
-          onChange={onEdit && (v => onEdit("subheadline", v))}
-          tag="p"
-          multiline
-          className="text-lg text-[#A1A1AA] mb-10 max-w-2xl leading-relaxed"
+// ─── 1. HERO — cinematic, motion-driven, premium ────────────────────────────
+const HERO_EASE = [0.16, 1, 0.3, 1];
+
+export const LiveHero = memo(({ d, onEdit }) => {
+  const { scrollY } = useScroll();
+  // Parallax: bg drifts down slower than scroll; content fades out as you leave.
+  const bgY = useTransform(scrollY, [0, 600], [0, 120]);
+  const bgScale = useTransform(scrollY, [0, 600], [1, 1.08]);
+  const contentOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const contentY = useTransform(scrollY, [0, 400], [0, -40]);
+
+  const stats = d.stats || [
+    { value: "9+",   label: "Years Superhost" },
+    { value: "100%", label: "Response Rate" },
+    { value: "4.9",  label: "Average Rating" },
+  ];
+
+  return (
+    <section className="relative min-h-[88dvh] flex items-center overflow-hidden bg-[#0A0A0B] noise-overlay">
+      {/* Parallax background */}
+      <motion.div className="absolute inset-0 will-change-transform" style={{ y: bgY, scale: bgScale }}>
+        <img
+          src={d.backgroundImage || "https://images.unsplash.com/photo-1771218830084-fdd272e149a1?w=1920&q=80"}
+          alt=""
+          className="w-full h-[115%] object-cover"
         />
-        <div className="flex flex-wrap gap-4 mb-12">
-          <Button className="bg-[#D4AF37] text-[#0F0F10] hover:bg-[#E5C158] rounded-none uppercase text-sm tracking-[0.15em] px-8 py-6 font-semibold">
-            <Building className="w-4 h-4 mr-2" />
-            <InlineText value={d.cta1Text || "List Your Property"} onChange={onEdit && (v => onEdit("cta1Text", v))} />
-            <ChevronRight className="w-4 h-4 ml-2" />
-          </Button>
-          <Button variant="outline" className="border-white/30 text-[#F5F5F0] hover:border-[#D4AF37] rounded-none uppercase text-sm tracking-[0.15em] px-8 py-6">
-            <Home className="w-4 h-4 mr-2" />
-            <InlineText value={d.cta2Text || "Book a Stay"} onChange={onEdit && (v => onEdit("cta2Text", v))} />
-          </Button>
+      </motion.div>
+
+      {/* Cinematic gradient stack */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/55 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0B]/85 via-[#0A0A0B]/30 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,175,55,0.08),transparent_60%)]" />
+
+      {/* Content */}
+      <motion.div
+        className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-24"
+        style={{ opacity: contentOpacity, y: contentY }}
+      >
+        <div className="max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: HERO_EASE }}
+            className="inline-flex items-center gap-2 px-4 py-2 border border-[#D4AF37]/30 bg-[#D4AF37]/[0.04] backdrop-blur-sm mb-8"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+            <InlineText
+              value={d.badge || "Malta's Premier Property Management"}
+              onChange={onEdit && (v => onEdit("badge", v))}
+              className="text-[11px] uppercase tracking-[0.25em] text-[#D4AF37] font-medium"
+            />
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, ease: HERO_EASE, delay: 0.08 }}
+            className="font-['Playfair_Display'] text-[clamp(2.75rem,6.5vw,5.5rem)] text-[#F5F5F0] mb-7 leading-[1.02] tracking-[-0.02em]"
+          >
+            <InlineText value={d.headline || "Your Home in Malta,"} onChange={onEdit && (v => onEdit("headline", v))} tag="span" />
+            <br />
+            <InlineText
+              value={d.headlineAccent || "Looked After Like a Hotel"}
+              onChange={onEdit && (v => onEdit("headlineAccent", v))}
+              tag="span"
+              className="italic"
+              style={{ background: "linear-gradient(135deg,#D4AF37 0%,#F3E5AB 45%,#D4AF37 75%,#B8962F 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+            />
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: HERO_EASE, delay: 0.18 }}
+          >
+            <InlineText
+              value={d.subheadline || "Handpicked luxury accommodations across Malta's most sought-after locations. Experience exceptional stays with personal attention."}
+              onChange={onEdit && (v => onEdit("subheadline", v))}
+              tag="p"
+              multiline
+              className="text-lg md:text-xl text-[#C9C9C2] mb-10 max-w-2xl leading-relaxed font-light"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: HERO_EASE, delay: 0.28 }}
+            className="flex flex-wrap gap-4 mb-14"
+          >
+            <Button className="group relative overflow-hidden bg-[#D4AF37] text-[#0F0F10] hover:bg-[#E5C158] rounded-none uppercase text-[12px] tracking-[0.18em] px-9 py-6 font-semibold shadow-[0_10px_40px_-12px_rgba(212,175,55,0.45)] transition-all hover:translate-y-[-2px] hover:shadow-[0_18px_50px_-12px_rgba(212,175,55,0.55)]">
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+              <Building className="w-4 h-4 mr-2 relative" />
+              <InlineText value={d.cta1Text || "List Your Property"} onChange={onEdit && (v => onEdit("cta1Text", v))} />
+              <ChevronRight className="w-4 h-4 ml-2 relative transition-transform group-hover:translate-x-1" />
+            </Button>
+            <Button variant="outline" className="group border-white/20 bg-white/[0.02] backdrop-blur-sm text-[#F5F5F0] hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 hover:text-[#D4AF37] rounded-none uppercase text-[12px] tracking-[0.18em] px-9 py-6 transition-all">
+              <Home className="w-4 h-4 mr-2" />
+              <InlineText value={d.cta2Text || "Book a Stay"} onChange={onEdit && (v => onEdit("cta2Text", v))} />
+              <ChevronRight className="w-4 h-4 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+            </Button>
+          </motion.div>
+
+          {/* Stats rail with gold hairline dividers */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: HERO_EASE, delay: 0.4 }}
+            className="flex flex-wrap items-stretch gap-x-10 md:gap-x-14 gap-y-6 pt-6 border-t border-white/10 max-w-xl"
+          >
+            {stats.map((s, i) => (
+              <div key={i} className="flex flex-col gap-1">
+                <InlineText
+                  value={s.value}
+                  onChange={onEdit && (v => { const a = [...stats]; a[i] = { ...a[i], value: v }; onEdit("stats", a); })}
+                  tag="span"
+                  className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#D4AF37] leading-none"
+                />
+                <InlineText
+                  value={s.label}
+                  onChange={onEdit && (v => { const a = [...stats]; a[i] = { ...a[i], label: v }; onEdit("stats", a); })}
+                  tag="span"
+                  className="text-[10px] md:text-[11px] uppercase tracking-[0.22em] text-[#A1A1AA] font-medium"
+                />
+              </div>
+            ))}
+          </motion.div>
         </div>
-        <div className="flex flex-wrap items-center gap-8 md:gap-12">
-          {(d.stats || [{ value: "9+", label: "Years Superhost" }, { value: "100%", label: "Response Rate" }, { value: "4.9", label: "Average Rating" }]).map((s, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <InlineText
-                value={s.value}
-                onChange={onEdit && (v => { const stats = [...(d.stats||[])]; stats[i]={...stats[i],value:v}; onEdit("stats",stats); })}
-                tag="span"
-                className="font-['Playfair_Display'] text-3xl text-[#D4AF37]"
-              />
-              <InlineText
-                value={s.label}
-                onChange={onEdit && (v => { const stats = [...(d.stats||[])]; stats[i]={...stats[i],label:v}; onEdit("stats",stats); })}
-                tag="span"
-                className="text-sm text-[#A1A1AA] leading-tight"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-));
+      </motion.div>
+
+      {/* Scroll cue */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2"
+        style={{ opacity: contentOpacity }}
+      >
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#A1A1AA]">Scroll</span>
+        <div className="w-px h-12 bg-gradient-to-b from-[#D4AF37] to-transparent animate-scroll-indicator" />
+      </motion.div>
+    </section>
+  );
+});
 
 // ─── 2. OWNERS SECTION — exact match of LandingPage owners section ──────────
 export const LiveOwnersSection = memo(({ d, onEdit }) => (
