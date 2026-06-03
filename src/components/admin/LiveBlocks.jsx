@@ -556,35 +556,43 @@ export const LiveTestimonials = memo(({ d, onEdit }) => {
   const items = d.items || [];
   const item = items[current] || items[0] || {};
   return (
-    <section className="relative py-24 overflow-hidden">
-      <div className="max-w-5xl mx-auto px-6 md:px-12 lg:px-20">
-        <div className="text-center mb-16">
-          <InlineText value={d.label || "Guest Reviews"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-          <InlineText value={d.title || "What Our Guests Say"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#F5F5F0]" />
-        </div>
+    <section className="relative py-28 md:py-36 overflow-hidden bg-[#0A0A0B]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06),transparent_60%)]" />
+      <div className="max-w-5xl mx-auto px-6 md:px-12 lg:px-20 relative">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.8, ease: HERO_EASE }} className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <span className="h-px w-8 bg-[#D4AF37]/60" />
+            <InlineText value={d.label || "Guest Reviews"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+            <span className="h-px w-8 bg-[#D4AF37]/60" />
+          </div>
+          <InlineText value={d.title || "What Our Guests Say"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-[clamp(2rem,4.2vw,3.25rem)] text-[#F5F5F0] leading-[1.1]" />
+        </motion.div>
         {items.length > 0 && (
-          <div className="relative bg-[#161618] border border-white/5 p-8 md:p-12">
-            <Quote className="absolute top-8 left-8 w-12 h-12 text-[#D4AF37]/20" />
+          <motion.div key={current} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: HERO_EASE }}
+            className="relative px-6 md:px-16 py-12 md:py-16">
+            <Quote className="absolute top-0 left-0 w-20 h-20 text-[#D4AF37]/15" />
+            <Quote className="absolute bottom-0 right-0 w-20 h-20 text-[#D4AF37]/15 rotate-180" />
             <div className="relative z-10">
-              <div className="flex gap-1 mb-6 justify-center">
+              <div className="flex gap-1.5 mb-8 justify-center">
                 {[...Array(5)].map((_, j) => (
-                  <Star key={j} className={`w-5 h-5 ${j < (item.rating || 5) ? "text-[#D4AF37] fill-[#D4AF37]" : "text-[#A1A1AA]"}`} />
+                  <Star key={j} className={`w-4 h-4 ${j < (item.rating || 5) ? "text-[#D4AF37] fill-[#D4AF37]" : "text-[#A1A1AA]/30"}`} />
                 ))}
               </div>
-              <blockquote className="text-lg md:text-xl text-[#F5F5F0] text-center mb-8 leading-relaxed max-w-3xl mx-auto">
+              <blockquote className="font-['Playfair_Display'] italic text-2xl md:text-3xl text-[#F5F5F0] text-center mb-10 leading-[1.4] max-w-3xl mx-auto">
                 "{item.text}"
               </blockquote>
               <div className="text-center">
-                <p className="text-[#F5F5F0] font-semibold">{item.name}</p>
-                <p className="text-[#A1A1AA] text-sm">{item.date}</p>
+                <div className="inline-block h-px w-12 bg-[#D4AF37]/40 mb-4" />
+                <p className="text-[#F5F5F0] font-medium tracking-wide">{item.name}</p>
+                <p className="text-[#A1A1AA] text-xs uppercase tracking-[0.22em] mt-1">{item.date}</p>
               </div>
             </div>
-            <div className="flex justify-center gap-2 mt-8">
+            <div className="flex justify-center gap-2 mt-12">
               {items.map((_, i) => (
-                <button key={i} onClick={() => setCurrent(i)} className={`h-2 rounded-full transition-all ${i === current ? "bg-[#D4AF37] w-6" : "bg-white/20 hover:bg-white/40 w-2"}`} />
+                <button key={i} onClick={() => setCurrent(i)} className={`h-px transition-all duration-500 ${i === current ? "bg-[#D4AF37] w-12" : "bg-white/20 hover:bg-white/40 w-6"}`} aria-label={`Review ${i+1}`} />
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
