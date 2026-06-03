@@ -434,33 +434,45 @@ export const LiveProperties = memo(({ d, onEdit }) => {
     limit: d.limit || d.showCount || 6,
     filters: { checkIn: d.checkIn||"", checkOut: d.checkOut||"", guests: d.minGuests||0, bedrooms: d.minBedrooms||0 }
   });
+  const count = d.limit || d.showCount || 6;
   return (
-    <section className="relative py-24 bg-[#0A0A0B] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-          <div>
-            <InlineText value={d.label || "Featured Properties"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-            <InlineText value={d.title || "Explore Our Portfolio"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#F5F5F0] leading-tight" />
+    <section className="relative py-28 md:py-36 bg-[#0A0A0B] overflow-hidden">
+      {/* subtle grain wash */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04] mix-blend-overlay" style={{ backgroundImage: "radial-gradient(circle at 20% 20%, #D4AF37 0px, transparent 1px), radial-gradient(circle at 80% 60%, #D4AF37 0px, transparent 1px)", backgroundSize: "32px 32px" }} />
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 relative">
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, ease: HERO_EASE }}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="h-px w-10 bg-[#D4AF37]/60" />
+              <InlineText value={d.label || "Featured Properties"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+            </div>
+            <InlineText value={d.title || "Explore Our Portfolio"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-[clamp(2rem,4.4vw,3.25rem)] text-[#F5F5F0] leading-[1.05]" />
           </div>
           {d.ctaText && (
-            <a href="/properties" className="flex items-center gap-2 border border-white/20 text-[#F5F5F0] hover:border-[#D4AF37] text-sm uppercase tracking-widest px-6 py-3 transition-all self-start">
+            <a href="/properties" className="group inline-flex items-center gap-3 border border-white/15 text-[#F5F5F0] hover:border-[#D4AF37] hover:text-[#D4AF37] text-[11px] uppercase tracking-[0.28em] px-7 py-4 transition-all duration-500 self-start">
               <InlineText value={d.ctaText} onChange={onEdit && (v => onEdit("ctaText",v))} />
-              <ArrowRight className="w-4 h-4 shrink-0" />
+              <ArrowRight className="w-4 h-4 shrink-0 group-hover:translate-x-1 transition-transform" />
             </a>
           )}
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading && Array.from({length: d.limit||d.showCount||6}).map((_,i) => <PropSkeleton key={i} />)}
+        </motion.div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+          {loading && Array.from({length: count}).map((_,i) => <PropSkeleton key={i} />)}
           {!loading && error && (
-            <div className="col-span-3 py-12 text-center">
+            <div className="col-span-3 py-16 text-center">
               <AlertCircle className="w-10 h-10 text-[#A1A1AA] opacity-30 mx-auto mb-3" />
               <p className="text-sm text-[#A1A1AA] mb-3">{error}</p>
               <button onClick={reload} className="text-xs text-[#D4AF37] flex items-center gap-1.5 mx-auto"><RefreshCw size={12}/>Retry</button>
             </div>
           )}
-          {!loading && !error && listings.slice(0, d.limit||d.showCount||6).map(l => <ListingCard key={l._id} listing={l} />)}
+          {!loading && !error && listings.slice(0, count).map((l, i) => (
+            <motion.div key={l._id} initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, delay: (i % 3) * 0.1, ease: HERO_EASE }}>
+              <ListingCard listing={l} />
+            </motion.div>
+          ))}
         </div>
-        {!loading && <div className="mt-4 flex justify-end"><button onClick={reload} className="text-[11px] text-[#D4AF37]/40 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"><RefreshCw size={10}/>Refresh from Guesty</button></div>}
+        {!loading && <div className="mt-6 flex justify-end"><button onClick={reload} className="text-[10px] uppercase tracking-[0.22em] text-[#D4AF37]/40 hover:text-[#D4AF37] flex items-center gap-1.5 transition-colors"><RefreshCw size={10}/>Refresh from Guesty</button></div>}
       </div>
     </section>
   );
