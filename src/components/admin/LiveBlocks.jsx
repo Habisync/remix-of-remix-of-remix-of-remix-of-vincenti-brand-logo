@@ -514,13 +514,18 @@ export const LiveStats = memo(({ d, onEdit }) => {
 
 // ─── 6. FEATURES GRID ────────────────────────────────────────────────────────
 export const LiveFeatures = memo(({ d, onEdit }) => (
-  <section className="py-24 bg-[#0F0F10]">
+  <section className="py-28 md:py-36 bg-[#0F0F10] relative overflow-hidden">
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
     <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-      <div className="text-center mb-12">
-        <InlineText value={d.label || "What We Do"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mb-4 block font-medium" />
-        <InlineText value={d.title || "Full-service property care"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-3xl md:text-4xl text-[#F5F5F0]" />
-      </div>
-      <div className={`grid md:grid-cols-2 ${d.columns === "4" ? "lg:grid-cols-4" : d.columns === "2" ? "lg:grid-cols-2" : "lg:grid-cols-3"} gap-6`}>
+      <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.8, ease: HERO_EASE }} className="text-center mb-16 max-w-2xl mx-auto">
+        <div className="flex items-center justify-center gap-3 mb-5">
+          <span className="h-px w-8 bg-[#D4AF37]/60" />
+          <InlineText value={d.label || "What We Do"} onChange={onEdit && (v => onEdit("label",v))} tag="span" className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-medium" />
+          <span className="h-px w-8 bg-[#D4AF37]/60" />
+        </div>
+        <InlineText value={d.title || "Full-service property care"} onChange={onEdit && (v => onEdit("title",v))} tag="h2" className="font-['Playfair_Display'] text-[clamp(2rem,4.2vw,3.25rem)] text-[#F5F5F0] leading-[1.1]" />
+      </motion.div>
+      <div className={`grid md:grid-cols-2 ${d.columns === "4" ? "lg:grid-cols-4" : d.columns === "2" ? "lg:grid-cols-2" : "lg:grid-cols-3"} gap-px bg-[#D4AF37]/10`}>
         {(d.items || [
           {icon:"Sparkles",title:"Listing & Marketing",desc:"Professional photography, multi-channel listings, and smart pricing."},
           {icon:"ClipboardList",title:"Booking Management",desc:"24/7 guest communication and seamless check-in coordination."},
@@ -528,11 +533,16 @@ export const LiveFeatures = memo(({ d, onEdit }) => (
         ]).map((f, i) => {
           const Icon = ICON_MAP[f.icon] || Star;
           return (
-            <div key={i} className="bg-[#161618] p-6 border border-white/5 hover:border-[#D4AF37]/20 transition-all">
-              <Icon className="w-10 h-10 text-[#D4AF37] mb-4" />
-              <InlineText value={f.title} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],title:v}; onEdit("items",items); })} tag="h3" className="text-[#F5F5F0] font-semibold mb-2" />
-              <InlineText value={f.desc} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],desc:v}; onEdit("items",items); })} tag="p" multiline className="text-[#A1A1AA] text-sm leading-relaxed" />
-            </div>
+            <motion.div key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.7, delay: i*0.08, ease: HERO_EASE }}
+              className="group relative bg-[#0F0F10] p-10 transition-all duration-500 hover:bg-[#13130f]">
+              <div className="absolute top-0 left-0 h-px w-0 bg-gradient-to-r from-[#D4AF37] to-transparent group-hover:w-full transition-all duration-700" />
+              <div className="w-14 h-14 mb-6 flex items-center justify-center border border-[#D4AF37]/30 group-hover:border-[#D4AF37] transition-colors duration-500">
+                <Icon className="w-6 h-6 text-[#D4AF37]" />
+              </div>
+              <InlineText value={f.title} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],title:v}; onEdit("items",items); })} tag="h3" className="font-['Playfair_Display'] text-2xl text-[#F5F5F0] mb-3" />
+              <InlineText value={f.desc} onChange={onEdit && (v => { const items=[...(d.items||[])]; items[i]={...items[i],desc:v}; onEdit("items",items); })} tag="p" multiline className="text-[#A1A1AA] text-[15px] leading-[1.7]" />
+            </motion.div>
           );
         })}
       </div>
