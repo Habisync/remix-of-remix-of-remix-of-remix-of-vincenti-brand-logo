@@ -89,8 +89,11 @@ function AppContent() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/en/map" element={<MapPage />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/admin/legacy" element={<AdminPage />} />
+          <Route path="/admin/legacy/*" element={<AdminPage />} />
+          <Route path="/admin" element={<EditorShell />} />
+          <Route path="/admin/*" element={<EditorShell />} />
+
         </Routes>
       </main>
       <Footer />
