@@ -13,6 +13,7 @@ import { ConfirmationPage } from "@/pages/ConfirmationPage";
 import { PropertyOwnersPage } from "@/pages/PropertyOwnersPage";
 import { MapPage } from "@/pages/MapPageLeaflet";
 import AdminPage from "@/pages/AdminPage";
+import EditorShell from "@/pages/EditorShell";
 import AuthPage from "@/pages/AuthPage";
 import { StickyCallToAction } from "@/components/StickyCallToAction";
 
