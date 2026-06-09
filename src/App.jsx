@@ -66,12 +66,14 @@ function ScrollToHash() {
 }
 
 function AppContent() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
   return (
     <>
       <EditModeBridge />
       <AppSEO />
       <ScrollToHash />
-      <Header />
+      {!isAdmin && <Header />}
       <main>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -93,11 +95,11 @@ function AppContent() {
           <Route path="/admin/legacy/*" element={<AdminPage />} />
           <Route path="/admin" element={<EditorShell />} />
           <Route path="/admin/*" element={<EditorShell />} />
-
         </Routes>
       </main>
-      <Footer />
-      <StickyCallToAction />
+      {!isAdmin && <Footer />}
+      {!isAdmin && <StickyCallToAction />}
+
       <Toaster position="top-right" richColors />
       <ContactModal />
       <PropertyOwnerModal />
