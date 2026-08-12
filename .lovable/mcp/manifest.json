@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.2",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://ceodzfohpstddpnqmoqu.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "remix-of-remix-of-remix-of-remix-of-vincenti-brand-logo",
+      "version": "0.1.0",
+      "title": "Remix of Remix of Remix of Remix of Vincenti Brand Logo"
+    },
+    "tools": [
+      {
+        "name": "list_cms_sections",
+        "title": "List CMS sections",
+        "description": "List every CMS section and page stored for the site, with its key, label, visibility and sort order.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_cms_section",
+        "title": "Get CMS section",
+        "description": "Read the full JSON content of one CMS section or page by its section key.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "section_key": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Section key, e.g. 'hero' or 'page:home'."
+            }
+          },
+          "required": [
+            "section_key"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "update_cms_section",
+        "title": "Update CMS section",
+        "description": "Create or replace the JSON content of a CMS section or page. Overwrites the stored content for that key.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "section_key": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Section key to write, e.g. 'hero' or 'page:home'."
+            },
+            "content": {
+              "description": "The full JSON content object to store for this section."
+            },
+            "section_label": {
+              "type": "string",
+              "description": "Human-readable label shown in the editor."
+            },
+            "is_visible": {
+              "type": "boolean",
+              "description": "Whether the section renders on the live site."
+            }
+          },
+          "required": [
+            "section_key"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "set_cms_section_visibility",
+        "title": "Show or hide CMS section",
+        "description": "Show or hide a CMS section on the live site without changing its content.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "section_key": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Section key to update."
+            },
+            "is_visible": {
+              "type": "boolean",
+              "description": "True to show the section, false to hide it."
+            }
+          },
+          "required": [
+            "section_key",
+            "is_visible"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_rental_listings",
+        "title": "List rental listings",
+        "description": "List the Malta rental properties currently published in the Guesty booking engine, with title, city and nightly price.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "How many listings to return (default 12, max 50)."
+            },
+            "city": {
+              "type": "string",
+              "description": "Optional city filter, e.g. 'Sliema'."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

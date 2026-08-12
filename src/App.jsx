@@ -15,6 +15,7 @@ import { MapPage } from "@/pages/MapPageLeaflet";
 import AdminPage from "@/pages/AdminPage";
 import EditorShell from "@/pages/EditorShell";
 import AuthPage from "@/pages/AuthPage";
+import OAuthConsent from "@/pages/OAuthConsent";
 import { StickyCallToAction } from "@/components/StickyCallToAction";
 
 // Layout
@@ -91,6 +92,7 @@ function AppContent() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/en/map" element={<MapPage />} />
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           <Route path="/admin/legacy" element={<AdminPage />} />
           <Route path="/admin/legacy/*" element={<AdminPage />} />
           <Route path="/admin" element={<EditorShell />} />

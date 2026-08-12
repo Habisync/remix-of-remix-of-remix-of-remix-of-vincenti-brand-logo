@@ -24,16 +24,21 @@ export default function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Preserve an intended destination (e.g. the OAuth consent screen)
+  const rawNext = params.get("next") || "";
+  const nextPath =
+    rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/admin";
+
   // Redirect already-authenticated users out of /auth
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) navigate("/admin", { replace: true });
+      if (session) navigate(nextPath, { replace: true });
     });
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/admin", { replace: true });
+      if (data.session) navigate(nextPath, { replace: true });
     });
     return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, nextPath]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +54,7 @@ export default function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/admin`,
+            emailRedirectTo: `${window.location.origin}${nextPath}`,
             data: { display_name: displayName || email.split("@")[0] },
           },
         });
@@ -59,7 +64,7 @@ export default function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Welcome back");
-        navigate("/admin", { replace: true });
+        navigate(nextPath, { replace: true });
       }
     } catch (err) {
       const msg = err?.message || "Authentication failed";
